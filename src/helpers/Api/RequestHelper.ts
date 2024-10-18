@@ -1,5 +1,5 @@
 // const baseUrl = 'http://localhost:5000/api';
-export const baseUrl = 'https://mario-signal-chat-gddqf7fud4exg6ez.canadacentral-01.azurewebsites.net/api';
+export const baseUrl = 'https://mario-signal-chat-gddqf7fud4exg6ez.canadacentral-01.azurewebsites.net';
 export const apiUrl = baseUrl.concat('/api');
 
 export async function makeRequest(url: string, method: string = 'GET', body: string|null = null, headers = {}) {
