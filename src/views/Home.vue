@@ -7,6 +7,7 @@
     import Header from '../components/Home/Header.vue';
     import Comment from '../components/Home/Comment.vue';
     import * as signalR from '@microsoft/signalr';
+import { baseUrl } from '../helpers/Api/RequestHelper';
 
     const chatHistory = ref<Message[]>([]);
 
@@ -25,7 +26,7 @@
 
     function connectChatHub() {
         const connection = new signalR.HubConnectionBuilder()
-            .withUrl("http://localhost:5000/chatHub")
+            .withUrl(baseUrl.concat('/chatHub'))
             .build();
 
         connection.on("ReceiveMessage", function (message: Message) {
