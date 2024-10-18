@@ -1,4 +1,5 @@
-const baseUrl = 'http://localhost:5000/api';
+// const baseUrl = 'http://localhost:5000/api';
+const baseUrl = 'https://mario-signal-chat-gddqf7fud4exg6ez.canadacentral-01.azurewebsites.net/api';
 
 export async function makeRequest(url: string, method: string = 'GET', body: string|null = null, headers = {}) {
     try {
