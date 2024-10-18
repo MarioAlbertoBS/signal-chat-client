@@ -1,0 +1,63 @@
+<script setup lang="ts">
+    import { ref, onMounted } from 'vue';
+    import { useRouter } from 'vue-router';
+    import { logoutUser, validateToken } from '../helpers/AuthenticationHelper';
+    import { getRoomMessages, Message } from '../helpers/Api/MessageRequestHelper';
+    import ChatHistory from '../components/Home/ChatHistory.vue';
+    import Header from '../components/Home/Header.vue';
+    import Comment from '../components/Home/Comment.vue';
+    import * as signalR from '@microsoft/signalr';
+
+    const chatHistory = ref<Message[]>([]);
+
+    const router = useRouter();
+
+    async function logout() {
+        logoutUser();
+
+        router.push({name: 'Login'});
+    }
+
+    async function loadHistory() {
+        const messages = await getRoomMessages("Default");
+        chatHistory.value = messages;
+    }
+
+    function connectChatHub() {
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("http://localhost:5000/chatHub")
+            .build();
+
+        connection.on("ReceiveMessage", function (message: Message) {
+            // Reload history
+            chatHistory.value.push(message)
+        })
+
+        connection.start().then(function() {
+            console.log("Connected to ChatHub");
+
+            connection.invoke("JoinRoom", "Default")
+                .catch(err => console.error(err));
+        }).catch(err => console.error(err.toString()));
+    }
+
+    onMounted(async () => {
+        if(!await validateToken()) {
+            router.push({name: 'Login'});
+            console.error("Token Invalid, redirecting to login");
+            return;
+        }
+
+        console.log("Token Valid");
+        connectChatHub();
+        loadHistory();
+    });
+</script>
+
+<template>
+    <div>
+        <Header @logout="logout"></Header>
+        <ChatHistory :chatHistory="chatHistory"></ChatHistory>
+        <Comment />
+    </div>
+</template>
