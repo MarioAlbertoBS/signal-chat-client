@@ -26,7 +26,9 @@ import { baseUrl } from '../helpers/Api/RequestHelper';
 
     function connectChatHub() {
         const connection = new signalR.HubConnectionBuilder()
-            .withUrl(baseUrl.concat('/chatHub'))
+            .withUrl(baseUrl.concat('/chatHub'), {
+                withCredentials: true
+            })
             .build();
 
         connection.on("ReceiveMessage", function (message: Message) {
